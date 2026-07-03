@@ -307,7 +307,7 @@
         const progressCount = document.getElementById('progress-count');
         const progressPercent = document.getElementById('progress-percent');
 
-        function renderQuestion(index) {
+       function renderQuestion(index) {
             const item = questionsData[index];
             
             // 更新进度条
@@ -316,17 +316,25 @@
             progressCount.innerText = `进度: ${index + 1} / 120`;
             progressPercent.innerText = `${percent}%`;
 
-            // 渲染卡片内容（默认第一项为初始值）
+            // 【修复关键】：将 onclick 绑定到 input 上，避免 label 默认行为导致的事件双重触发
             let optionsHTML = '';
             item.opts.forEach((opt, optIndex) => {
                 optionsHTML += `
-                    <label onclick="handleSelect(${optIndex})">
-                        <input type="radio" name="q${index}" value="${optIndex}" ${optIndex === 0 ? 'checked' : ''}>
+                    <label>
+                        <input type="radio" name="q${index}" value="${optIndex}" onclick="handleSelect(${optIndex})" ${optIndex === 0 ? 'checked' : ''}>
                         ${opt}
                     </label>
                 `;
             });
 
+            cardArea.innerHTML = `
+                <div class="question-card">
+                    <div class="question-tag">${item.tag}</div>
+                    <div class="question-title">${index + 1}. ${item.q}</div>
+                    <div class="options">${optionsHTML}</div>
+                </div>
+            `;
+        }
             cardArea.innerHTML = `
                 <div class="question-card">
                     <div class="question-tag">${item.tag}</div>
